@@ -36,6 +36,13 @@
 #include <QTimer>
 #include <QWhatsThis>
 
+#include <vector> //Sonic
+#include <sys/types.h>
+#include <vector>
+#include <dirent.h>
+#include <errno.h>
+#include <unistd.h>
+#include <pwd.h>
 
 class FirstRunDialog;
 class SessionStack;
@@ -161,6 +168,26 @@ class MainWindow : public KMainWindow
         void sharedAfterOpenWindow();
         void sharedPreHideWindow();
         void sharedAfterHideWindow();
+	void openAllTerminals(); //--Sonic
+	//static int getdir(std::string dir, std::vector<std::string> &files);
+	static int getdir (std::string dir, std::vector<std::string> &files)
+	{
+        	DIR *dp;
+	        struct dirent *dirp;
+        	if((dp = opendir(dir.c_str())) == NULL)                 
+                	return errno;
+	
+        	while ((dirp = readdir(dp)) != NULL) 
+                	files.push_back(std::string(dirp->d_name));
+        
+	        closedir(dp);
+        	return 0;
+	}
+
+	static std::string getHome() {
+		struct passwd *pw = getpwuid(getuid());
+		return std::string(pw->pw_dir);
+	}
 
         void updateMask();
 

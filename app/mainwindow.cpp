@@ -58,7 +58,10 @@
 #include <X11/Xlib.h>
 #endif
 
-
+/*Sonic*/
+#include  <algorithm>
+#include <iostream>
+/*End*/
 MainWindow::MainWindow(QWidget* parent)
     : KMainWindow(parent, Qt::CustomizeWindowHint | Qt::FramelessWindowHint)
 {
@@ -104,7 +107,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(KApplication::desktop(), SIGNAL(screenCountChanged(int)), this, SLOT(updateScreenMenu()));
 
     applySettings();
-
+    this->openAllTerminals();
     m_sessionStack->addSession();
 
     if (Settings::firstRun())
@@ -128,6 +131,30 @@ MainWindow::~MainWindow()
 
     delete m_skin;
 }
+/*Sonic Patch*/
+#define PATH "/.yakuake-autostart/"
+void MainWindow::openAllTerminals() {
+	int id;
+	std::string dir = getHome();
+	dir.append(PATH);
+	std::vector<std::string> files = std::vector<std::string>();
+
+	if (getdir(dir, files) != 0)
+		return;
+
+	sort(files.begin(), files.end());
+
+	for(size_t i = 0; i < files.size(); i++) {
+		if (files[i] == "." || files[i] == "..")
+			continue;
+
+		id = m_sessionStack->addSession();
+		QString cmd = QString(dir.c_str());
+		cmd.append(files[i].c_str());
+		m_sessionStack->runCommandInTerminal(id, cmd);
+	}
+}
+/*end of patch*/
 
 bool MainWindow::queryClose()
 {
