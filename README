@@ -29,5 +29,9 @@ Basic build and installation instructions:
 6. make
 7. sudo make install
 
+To spawn different terminals at startup each of them executing a script:
+1. Create the directory ~/.yakuake-autostart/
+2. Put your .sh scripts in there (with the eXecute permission).
+
 For more, please see the KDE Techbase wiki (http://techbase.kde.org/) and
 the CMake documentation (at http://www.cmake.org/).
